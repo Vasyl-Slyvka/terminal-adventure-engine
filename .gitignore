@@ -1,0 +1,16 @@
+# Compiled objects and binaries
+*.o
+adventure
+tests/test_core
+
+# Coverage and sanitizer output
+*.gcda
+*.gcno
+*.gcov
+*.log
+
+# Editor and operating-system files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

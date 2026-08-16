@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    name: ${{ matrix.compiler }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        compiler: [gcc, clang]
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Build and run tests
+        run: make clean test CC=${{ matrix.compiler }}
+
+  sanitizers:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Build with AddressSanitizer and UBSan
+        run: |
+          make clean
+          make test \
+            CFLAGS="-std=c11 -Wall -Wextra -Wconversion -Werror -pedantic -g3 -fsanitize=address,undefined -fno-omit-frame-pointer"
+        env:
+          ASAN_OPTIONS: detect_leaks=1
+          UBSAN_OPTIONS: halt_on_error=1
